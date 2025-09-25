@@ -14,3 +14,22 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+
+model User {
+  id        String @id @default(uuid()) @db.Uuid
+  username  String @unique
+  role      String
+  createdAt DateTime @default(now())
+}
+
+model Post {
+  id          String @id @default(uuid()) @db.Uuid
+  title       String
+  image_url   String
+  user_id     String @db.Uuid
+  description String
+  footer      String
+  tag         String
+  status      String
+  createdAt   DateTime @default(now())
+}
