@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { type SupabaseClient, createClient } from '@supabase/supabase-js';
 
 @Injectable()
-export class SupabaseService {
+export class StorageService {
   private supabase: SupabaseClient;
 
   constructor() {
@@ -22,8 +22,9 @@ export class SupabaseService {
       .from(bucket)
       .upload(path, file, { contentType: mimetype });
 
-    if (error) throw error;
-    return data;
+    if (error || !data) throw error;
+
+    return { url: data.fullPath };
   }
 
   getPublicUrl(bucket: string, path: string) {

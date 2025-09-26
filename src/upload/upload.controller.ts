@@ -6,7 +6,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { SupabaseService } from '@src/supabase/supabase.service';
+import { StorageService } from '@src/storage/storage.service';
 
 interface MulterFile {
   fieldname: string;
@@ -19,7 +19,7 @@ interface MulterFile {
 
 @Controller('upload')
 export class UploadController {
-  constructor(private readonly supabase: SupabaseService) {}
+  constructor(private readonly storageService: StorageService) {}
 
   @Post('image')
   @UseInterceptors(FileInterceptor('file'))
@@ -29,13 +29,13 @@ export class UploadController {
     }
 
     const filename = `public/${Date.now()}-${file.originalname}`;
-    await this.supabase.uploadImage(
+    const { url } = await this.storageService.uploadImage(
       'images',
       filename,
       file.buffer,
       file.mimetype,
     );
 
-    return { url: this.supabase.getPublicUrl('images', filename) };
+    return { url };
   }
 }
